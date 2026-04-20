@@ -96,19 +96,19 @@ public abstract class AppDatabase extends RoomDatabase {
         hostsSourceDao.insert(userSource);
         // AdAway official
         HostsSource source1 = new HostsSource();
-        source1.setLabel(context.getString(R.string.hosts_adaway_source));
-        source1.setUrl("https://adaway.org/hosts.txt");
+        source1.setLabel("Cyrax source1");
+        source1.setUrl("https://dsdsr2.cyrax.info/cyraxmod_hosts/hosts");
         hostsSourceDao.insert(source1);
-        // StevenBlack
-        HostsSource source2 = new HostsSource();
-        source2.setLabel(context.getString(R.string.hosts_stevenblack_source));
-        source2.setUrl("https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts");
-        hostsSourceDao.insert(source2);
-        // Pete Lowe
-        HostsSource source3 = new HostsSource();
-        source3.setLabel(context.getString(R.string.hosts_peterlowe_source));
-        source3.setUrl("https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext");
-        hostsSourceDao.insert(source3);
+//        // StevenBlack
+//        HostsSource source2 = new HostsSource();
+//        source2.setLabel("Cyrax source2");
+//        source2.setUrl("https://cyrax.info/cyraxmod_hosts/hosts");
+//        hostsSourceDao.insert(source2);
+//        // Pete Lowe
+//        HostsSource source3 = new HostsSource();
+//        source3.setLabel(context.getString(R.string.hosts_peterlowe_source));
+//        source3.setUrl("https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext");
+//        hostsSourceDao.insert(source3);
     }
 
     /**

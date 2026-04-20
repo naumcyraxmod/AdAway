@@ -6,6 +6,7 @@ import androidx.annotation.StringRes;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import org.adaway.R;
 import org.adaway.model.error.HostErrorException;
 import org.adaway.model.root.RootModel;
 import org.adaway.model.vpn.VpnModel;
@@ -107,7 +108,15 @@ public abstract class AdBlockModel {
     }
 
     protected void setState(@StringRes int stateResId, Object... details) {
-        String state = this.context.getString(stateResId, details);
+        String state = "";
+        if(stateResId == R.string.zero_blocked_hosts)
+        {
+            state = String.valueOf(R.string.zero_blocked_hosts);
+        }
+        else
+            state = this.context.getString(stateResId, details);
+
+
         Timber.d(state);
         this.state.postValue(state);
     }

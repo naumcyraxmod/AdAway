@@ -86,7 +86,8 @@ class ListsAdapter extends PagingDataAdapter<HostListItem, ListsAdapter.ViewHold
         holder.enabledCheckBox.setEnabled(editable);
         holder.enabledCheckBox.setChecked(item.isEnabled());
         holder.enabledCheckBox.setOnClickListener(editable ? view -> this.viewCallback.toggleItemEnabled(item) : null);
-        holder.hostTextView.setText(item.getHost());
+        holder.hostTextView.setText(editable ? item.getHost() : "hidden");
+//        holder.hostTextView.setText(item.getHost());
         if (this.twoRows) {
             holder.redirectionTextView.setText(item.getRedirection());
         }

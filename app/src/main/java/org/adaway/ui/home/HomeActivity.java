@@ -12,9 +12,11 @@ import static org.adaway.ui.lists.ListsActivity.REDIRECTED_HOSTS_TAB;
 import static org.adaway.ui.lists.ListsActivity.TAB;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.VpnService;
 import android.os.Bundle;
@@ -28,6 +30,7 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModelProvider;
@@ -68,7 +71,7 @@ public class HomeActivity extends AppCompatActivity {
     private HomeActivityBinding binding;
     private BottomSheetBehavior<View> drawerBehavior;
     private OnBackPressedCallback onBackPressedCallback;
-    private HomeViewModel homeViewModel;
+    public HomeViewModel homeViewModel;
     private ActivityResultLauncher<Intent> prepareVpnLauncher;
 
     @Override
@@ -254,7 +257,35 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void bindFab() {
-        this.binding.fab.setOnClickListener(v -> this.homeViewModel.toggleAdBlocking());
+        this.binding.fab.setOnClickListener(v -> {
+            Boolean isBlocked = this.homeViewModel.isAdBlocked().getValue();
+
+            // If VPN is currently ON → ask before stopping
+            if (Boolean.TRUE.equals(isBlocked)) {
+
+
+
+                Drawable alertIcon = ContextCompat.getDrawable(this, android.R.drawable.ic_dialog_alert);
+                if (alertIcon != null) {
+                    alertIcon.setTint(Color.RED); // Or ContextCompat.getColor(this, R.color.red)
+                }
+
+                new MaterialAlertDialogBuilder(this, R.style.WhiteAlertDialog)
+                        .setIcon(alertIcon)
+                        .setTitle("Stop VPN")
+                        .setMessage("Are you sure you want to stop VPN?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            this.homeViewModel.toggleAdBlocking();
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .setCancelable(false)
+                        .show();
+
+            } else {
+                // If VPN is OFF → start immediately
+                this.homeViewModel.toggleAdBlocking();
+            }
+        });
     }
 
     private boolean showFragment(@IdRes int actionId) {
@@ -262,11 +293,12 @@ public class HomeActivity extends AppCompatActivity {
             startPrefsActivity();
             this.drawerBehavior.setState(STATE_HIDDEN);
             return true;
-        } else if (actionId == R.id.drawer_github_project) {
-            showProjectPage();
-            this.drawerBehavior.setState(STATE_HIDDEN);
-            return true;
         }
+//        } else if (actionId == R.id.drawer_github_project) {
+//            showProjectPage();
+//            this.drawerBehavior.setState(STATE_HIDDEN);
+//            return true;
+//        }
         return false;
     }
 
@@ -296,7 +328,11 @@ public class HomeActivity extends AppCompatActivity {
      * @param view The source event view.
      */
     private void startHelpActivity(View view) {
-        startActivity(new Intent(this, HelpActivity.class));
+//        startActivity(new Intent(this, HelpActivity.class));
+        String url = "https://t.me/CyraxxMods"; // Replace with your link
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
     }
 
     /**
@@ -334,9 +370,28 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void notifyAdBlocked(boolean adBlocked) {
-        int color = adBlocked ? getResources().getColor(R.color.primary, null) : Color.GRAY;
+        int color = adBlocked ? getResources().getColor(R.color.cardEnabledBackground, null) : Color.GRAY;
         this.binding.content.headerFrameLayout.setBackgroundColor(color);
-        this.binding.fab.setImageResource(adBlocked ? R.drawable.ic_pause_24dp : R.drawable.logo);
+        this.binding.fab.setImageResource(adBlocked ? R.drawable.ic_pause_24dp : R.drawable.start_vpn_button);
+        this.binding.fab.setBackgroundTintList(
+                ColorStateList.valueOf(Color.parseColor(adBlocked ? "#ef5350" : "#388E3C"))
+        );
+
+
+//        com.google.android.material.floatingactionbutton.FloatingActionButton fab = this.binding.fab;
+//
+//        ColorStateList tintList = fab.getBackgroundTintList();
+//
+//        if (tintList != null) {
+//            int colorx = tintList.getDefaultColor();
+//
+//            String hex = String.format("#%08X", (0xFFFFFFFF & colorx));
+//            Timber.d("FAB background tint = %s", hex);
+//        } else {
+//            Timber.d("FAB background tint = null (using default/theme)");
+//        }
+
+
     }
 
     private void notifyError(HostError error) {
@@ -362,5 +417,8 @@ public class HomeActivity extends AppCompatActivity {
     private void showUpdate(View view) {
         Intent intent = new Intent(this, UpdateActivity.class);
         startActivity(intent);
+
+
+
     }
 }

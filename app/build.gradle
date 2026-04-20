@@ -44,21 +44,22 @@ android {
      * signingKeyAlias=alias
      * signingKeyPassword=xxx
      */
-    if (keyStoreDefined) {
-        println "Found signature properties in gradle.properties. Build will be signed."
 
-        signingConfigs {
-            release {
-                storeFile file(signingStoreLocation)
-                storePassword signingStorePassword
-                keyAlias signingKeyAlias
-                keyPassword signingKeyPassword
-            }
+    signingConfigs {
+        release {
+            storeFile file("C://cyrax_key_1.jks")
+            storePassword "cyraxthebest6969"
+            keyAlias "cyrax_key_1"
+            keyPassword "cyraxthebest6969"
+            v1SigningEnabled true
+            v2SigningEnabled true
+            enableV3Signing true
         }
-
-        buildTypes.debug.signingConfig = signingConfigs.release
-        buildTypes.release.signingConfig = signingConfigs.release
     }
+
+    buildTypes.debug.signingConfig = signingConfigs.release
+    buildTypes.release.signingConfig = signingConfigs.release
+
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17

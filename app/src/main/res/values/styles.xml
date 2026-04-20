@@ -38,4 +38,9 @@
         <item name="android:navigationBarColor">@color/welcomeBackground</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
+
+    <style name="WhiteAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="colorOnSurface">#000000</item>
+    </style>
 </resources>

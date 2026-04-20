@@ -29,7 +29,7 @@ public class SupportActivity extends AppCompatActivity {
     /**
      * The support link.
      */
-    public static final Uri SUPPORT_LINK = parse("https://paypal.me/BruceBUJON");
+    public static final Uri SUPPORT_LINK = parse("https://paypal.me/cyraxmodPH");
     /**
      * The sponsorship link.
      */

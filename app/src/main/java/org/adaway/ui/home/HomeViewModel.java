@@ -1,6 +1,7 @@
 package org.adaway.ui.home;
 
 import android.app.Application;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -113,7 +114,26 @@ public class HomeViewModel extends AndroidViewModel {
     }
 
     public void checkForAppUpdate() {
-        EXECUTORS.networkIO().execute(this.updateModel::checkForUpdate);
+        EXECUTORS.networkIO().execute(() -> {
+            try {
+                boolean updateAvailable = this.sourceModel.checkForUpdate();
+
+                if (updateAvailable) {
+                    Timber.d("Update available → syncing now");
+
+                    sync(); // 🔥 apply update
+                }
+                else
+                {
+                    this.adBlockModel.apply();
+                }
+
+            } catch (HostErrorException e) {
+                Timber.e(e, "Update check failed");
+            }
+
+
+        });
     }
 
     public void toggleAdBlocking() {

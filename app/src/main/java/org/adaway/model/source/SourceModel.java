@@ -421,7 +421,8 @@ public class SourceModel {
         String hostsFileUrl = source.getUrl();
         Timber.v("Downloading hosts file: %s.", hostsFileUrl);
         // Set state to downloading hosts source
-        setState(R.string.status_download_source, hostsFileUrl);
+//        setState(R.string.status_download_source, hostsFileUrl);
+        setState(R.string.status_download_source, source.getLabel());
         // Create request
         Request request = getRequestFor(source).build();
         // Request hosts file and open byte stream
@@ -460,7 +461,7 @@ public class SourceModel {
         Uri fileUri = Uri.parse(hostsFileUrl);
         Timber.v("Reading hosts source file: %s.", hostsFileUrl);
         // Set state to copying hosts source
-        setState(R.string.status_read_source, hostsFileUrl);
+        setState(R.string.status_read_source, hostsSource.getLabel());
         try (InputStream inputStream = this.context.getContentResolver().openInputStream(fileUri);
              InputStreamReader reader = new InputStreamReader(inputStream);
              BufferedReader bufferedReader = new BufferedReader(reader)) {

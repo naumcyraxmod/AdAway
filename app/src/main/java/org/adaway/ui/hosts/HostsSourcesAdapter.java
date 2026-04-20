@@ -109,12 +109,13 @@ class HostsSourcesAdapter extends ListAdapter<HostsSource, HostsSourcesAdapter.V
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         HostsSource source = this.getItem(position);
         holder.enabledCheckBox.setChecked(source.isEnabled());
-        holder.enabledCheckBox.setOnClickListener(view -> viewCallback.toggleEnabled(source));
+//        holder.enabledCheckBox.setOnClickListener(view -> viewCallback.toggleEnabled(source));
         holder.labelTextView.setText(source.getLabel());
-        holder.urlTextView.setText(source.getUrl());
+//        holder.urlTextView.setText(source.getUrl());
+        holder.urlTextView.setText("...");
         holder.updateTextView.setText(getUpdateText(source));
         holder.sizeTextView.setText(getHostCount(source));
-        holder.itemView.setOnClickListener(view -> viewCallback.edit(source));
+//        holder.itemView.setOnClickListener(view -> viewCallback.edit(source));
     }
 
     private String getUpdateText(HostsSource source) {
