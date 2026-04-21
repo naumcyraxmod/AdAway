@@ -18,11 +18,12 @@ android {
     ndkVersion '27.2.12479018'
     namespace 'org.adaway'
 
+
     defaultConfig {
         minSdk 26
         targetSdk 33
-        versionCode libs.versions.appCode.get() as int
         versionName libs.versions.appName.get()
+        versionCode versionName.replaceAll("[^\\d]", "").toInteger()
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -36,6 +37,21 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    applicationVariants.configureEach { variant ->
+        if (variant.buildType.name == "release") {
+            variant.outputs.configureEach { output ->
+                def abiName = output.filters.find { it.filterType == 'ABI' }?.identifier ?: "" //universal
+
+                abiName = abiName.replace("armeabi-v7a", "android_32")
+                        .replace("arm64-v8a", "android_64")
+                        .replace("x86_64", "emulator_64")
+                        .replace("x86", "emulator_32")
+                abiName = abiName ? "_${abiName}" : ""
+
+                output.outputFileName = "CyraxMod_AdAway_v${variant.versionCode}${abiName}.apk"
+            }
+        }
+    }
     /*
      * To sign release build, create file gradle.properties in ~/.gradle/ with this content:
      *
@@ -68,6 +84,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        buildConfig = true
     }
 
     packagingOptions {

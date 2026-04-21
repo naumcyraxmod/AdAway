@@ -28,6 +28,8 @@ import org.adaway.ui.home.HomeViewModel;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import timber.log.Timber;
+
 /**
  * This class is a fragment to first sync the main hosts source.
  *
@@ -50,9 +52,9 @@ public class WelcomeSyncFragment extends WelcomeFragment {
         this.homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         LifecycleOwner lifecycleOwner = getViewLifecycleOwner();
         this.homeViewModel.isAdBlocked().observe(lifecycleOwner, adBlocked -> {
-            if (adBlocked) {
+//            if (adBlocked) {
                 notifySynced();
-            }
+//            }
         });
         this.homeViewModel.getError().observe(lifecycleOwner, this::notifyError);
         this.homeViewModel.sync();
@@ -61,11 +63,13 @@ public class WelcomeSyncFragment extends WelcomeFragment {
     }
 
     private void bindRetry() {
+        Timber.i("WelcomeSyncFragment bindRetry");
         this.binding.retryImageView.setOnClickListener(this::retry);
         this.binding.errorTextView.setOnClickListener(this::retry);
     }
 
     private void bindNotifications() {
+        Timber.i("WelcomeSyncFragment bindNotifications");
         if (SDK_INT < TIRAMISU || requireActivity().checkSelfPermission(POST_NOTIFICATIONS) == PERMISSION_GRANTED) {
             this.requestPostNotificationsPermission = false;
         } else {
@@ -74,6 +78,7 @@ public class WelcomeSyncFragment extends WelcomeFragment {
             new Timer(true).schedule(new TimerTask() {
                 @Override
                 public void run() {
+                    Timber.i("WelcomeSyncFragment bindNotifications requestPostNotificationsPermission");
                     requestPostNotificationsPermission();
                 }
             }, 10_000);
@@ -81,6 +86,7 @@ public class WelcomeSyncFragment extends WelcomeFragment {
     }
 
     private void notifySynced() {
+        Timber.i("WelcomeSyncFragment notifySynced");
         this.homeViewModel.enableAllSources();
         this.binding.headerTextView.setText(R.string.welcome_synced_header);
         hideView(this.binding.progressBar);
@@ -90,6 +96,7 @@ public class WelcomeSyncFragment extends WelcomeFragment {
     }
 
     private void notifyError(HostError error) {
+        Timber.i("WelcomeSyncFragment notifyError");
         String errorMessage = getResources().getText(error.getMessageKey()).toString();
         String syncError = getResources().getText(R.string.welcome_sync_error).toString();
         String retryMessage = String.format(syncError, errorMessage);
@@ -101,6 +108,7 @@ public class WelcomeSyncFragment extends WelcomeFragment {
     }
 
     private void retry(@SuppressWarnings("unused") View view) {
+        Timber.i("WelcomeSyncFragment retry");
         hideView(this.binding.errorImageView);
         hideView(this.binding.retryImageView);
         hideView(this.binding.errorTextView);
@@ -109,6 +117,7 @@ public class WelcomeSyncFragment extends WelcomeFragment {
     }
 
     private void requestPostNotificationsPermission() {
+        Timber.i("WelcomeSyncFragment requestPostNotificationsPermission");
         if (SDK_INT >= TIRAMISU && this.requestPostNotificationsPermission) {
             this.requestPostNotificationsPermission = false;
             this.activityResultLauncher.launch(POST_NOTIFICATIONS);

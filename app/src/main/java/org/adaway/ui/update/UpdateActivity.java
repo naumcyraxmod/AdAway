@@ -7,6 +7,7 @@ import static org.adaway.ui.support.SupportActivity.SPONSORSHIP_LINK;
 import static org.adaway.ui.support.SupportActivity.SUPPORT_LINK;
 import static org.adaway.ui.support.SupportActivity.bindLink;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 
@@ -57,8 +58,14 @@ public class UpdateActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void bindProgress() {
         this.updateViewModel.getDownloadProgress().observe(this, progress -> {
+            if (progress == null) {
+                this.binding.updateButton.setVisibility(VISIBLE);
+                this.binding.downloadProgressBar.setVisibility(INVISIBLE);
+                return;
+            }
             this.binding.updateButton.setVisibility(INVISIBLE);
             this.binding.downloadProgressBar.setVisibility(VISIBLE);
             this.binding.downloadProgressBar.setProgress(progress.getProgress(), true);

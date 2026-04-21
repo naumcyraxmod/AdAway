@@ -2,11 +2,13 @@ package org.adaway.model.update;
 
 import static android.app.DownloadManager.ACTION_DOWNLOAD_COMPLETE;
 import static android.os.Build.VERSION.SDK_INT;
+import static androidx.core.content.ContextCompat.startActivity;
 import static org.adaway.model.update.UpdateStore.getApkStore;
 import static java.util.Objects.requireNonNull;
 
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -34,8 +36,8 @@ import timber.log.Timber;
  * @author Bruce BUJON (bruce.bujon(at)gmail(dot)com)
  */
 public class UpdateModel {
-    private static final String MANIFEST_URL = "https://app.adaway.org/manifest.json";
-    private static final String DOWNLOAD_URL = "https://app.adaway.org/adaway.apk?versionCode=";
+    private static final String MANIFEST_URL = "https://cyrax.info/product/getUpdateJson/11?changelog_method=1";
+    private static final String DOWNLOAD_URL = "https://cyrax.info/product/download/11";
     private final Context context;
     private final VersionInfo versionInfo;
     private final OkHttpClient client;
@@ -168,8 +170,7 @@ public class UpdateModel {
     }
 
     private long download(Manifest manifest) {
-        Timber.i("Downloading " + manifest.version + ".");
-        Uri uri = Uri.parse(DOWNLOAD_URL + manifest.versionCode);
+        Uri uri = Uri.parse(DOWNLOAD_URL); // + manifest.versionCode //revert
         DownloadManager.Request request = new DownloadManager.Request(uri)
                 .setTitle("AdAway " + manifest.version)
                 .setDescription(this.context.getString(R.string.update_notification_description));
@@ -199,5 +200,12 @@ public class UpdateModel {
         public boolean isValid() {
             return this.code > 0;
         }
+    }
+
+    public static void downloadError(Context context)
+    {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(DOWNLOAD_URL));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 }

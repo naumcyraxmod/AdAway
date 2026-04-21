@@ -16,6 +16,8 @@ import org.adaway.ui.home.HomeActivity;
 import static org.adaway.ui.Animations.hideView;
 import static org.adaway.ui.Animations.showView;
 
+import timber.log.Timber;
+
 /**
  * This class is a welcome activity to run first time setup on the user device.
  *
@@ -149,6 +151,7 @@ public class WelcomeActivity extends AppCompatActivity implements WelcomeNavigab
     }
 
     private void startHomeActivity() {
+        Timber.e("startHomeActivity");
         startActivity(new Intent(this, HomeActivity.class));
         finish();
     }

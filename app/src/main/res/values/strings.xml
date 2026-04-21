@@ -82,7 +82,6 @@
     <string name="status_copy_new_hosts">Copying a new hosts file</string>
     <string name="status_check_copy">Checking hosts file copy</string>
     <string name="status_hosts_updated">Hosts file successfully updated</string>
-    <string name="zero_blocked_hosts">Can\'t start anti-ban VPN with zero blocked hosts</string>
     <string name="status_vpn_configuration_updated">VPN configuration successfully updated</string>
     <string name="notification_configuration_changed">Your configuration changed. You need to apply it.</string>
     <string name="notification_configuration_changed_action">Apply</string>

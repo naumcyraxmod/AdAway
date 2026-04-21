@@ -33,7 +33,7 @@ public class SupportActivity extends AppCompatActivity {
     /**
      * The sponsorship link.
      */
-    public static final Uri SPONSORSHIP_LINK = parse("https://github.com/sponsors/PerfectSlayer");
+    public static final Uri SPONSORSHIP_LINK = parse("https://t.me/CyraxxMods");
 
     public static void animateHeart(ImageView heartImageView) {
         PropertyValuesHolder growScaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1F, 1.2F);

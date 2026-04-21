@@ -114,26 +114,8 @@ public class HomeViewModel extends AndroidViewModel {
     }
 
     public void checkForAppUpdate() {
-        EXECUTORS.networkIO().execute(() -> {
-            try {
-                boolean updateAvailable = this.sourceModel.checkForUpdate();
-
-                if (updateAvailable) {
-                    Timber.d("Update available → syncing now");
-
-                    sync(); // 🔥 apply update
-                }
-                else
-                {
-                    this.adBlockModel.apply();
-                }
-
-            } catch (HostErrorException e) {
-                Timber.e(e, "Update check failed");
-            }
-
-
-        });
+        Timber.i("checkForAppUpdate");
+        EXECUTORS.networkIO().execute(this.updateModel::checkForUpdate);
     }
 
     public void toggleAdBlocking() {
@@ -157,6 +139,8 @@ public class HomeViewModel extends AndroidViewModel {
         });
     }
 
+
+
     public void update() {
         if (isTrue(this.pending)) {
             return;
@@ -164,7 +148,16 @@ public class HomeViewModel extends AndroidViewModel {
         EXECUTORS.networkIO().execute(() -> {
             try {
                 this.pending.postValue(true);
-                this.sourceModel.checkForUpdate();
+                boolean updateAvailable = this.sourceModel.checkForUpdate();
+                if (updateAvailable) {
+                    Timber.d("Update available → syncing now");
+                    this.pending.postValue(false);
+                    sync(); // 🔥 apply update
+                }
+                else
+                {
+                    this.adBlockModel.apply();
+                }
             } catch (HostErrorException exception) {
                 Timber.w(exception, "Failed to update.");
                 this.error.postValue(exception.getError());
@@ -175,7 +168,9 @@ public class HomeViewModel extends AndroidViewModel {
     }
 
     public void sync() {
+        Timber.d("Sync try");
         if (isTrue(this.pending)) {
+            Timber.d("Sync pending");
             return;
         }
         EXECUTORS.networkIO().execute(() -> {
@@ -183,6 +178,7 @@ public class HomeViewModel extends AndroidViewModel {
                 this.pending.postValue(true);
                 this.sourceModel.retrieveHostsSources();
                 this.adBlockModel.apply();
+                Timber.d("Synced");
             } catch (HostErrorException exception) {
                 Timber.w(exception, "Failed to sync.");
                 this.error.postValue(exception.getError());

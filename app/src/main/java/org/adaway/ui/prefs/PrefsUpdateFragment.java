@@ -28,6 +28,8 @@ import static org.adaway.model.update.UpdateStore.ADAWAY;
 import static org.adaway.ui.prefs.PrefsActivity.PREFERENCE_NOT_FOUND;
 import static org.adaway.util.Constants.PREFS_NAME;
 
+import timber.log.Timber;
+
 /**
  * This fragment is the preferences fragment for update settings.
  *
@@ -74,6 +76,7 @@ public class PrefsUpdateFragment extends PreferenceFragmentCompat {
     }
 
     private void bindAppUpdatePrefAction() {
+        Timber.d("bindAppUpdatePrefAction");
         Context context = requireContext();
         SwitchPreferenceCompat checkAppDailyPref = findPreference(getString(R.string.pref_update_check_app_daily_key));
         assert checkAppDailyPref != null : PREFERENCE_NOT_FOUND;
@@ -88,6 +91,7 @@ public class PrefsUpdateFragment extends PreferenceFragmentCompat {
     }
 
     private void bindAppChannelPrefAction() {
+        Timber.d("bindAppChannelPrefAction");
         Context context = requireContext();
         AdAwayApplication application = (AdAwayApplication) context.getApplicationContext();
         UpdateStore store = application.getUpdateModel().getStore();

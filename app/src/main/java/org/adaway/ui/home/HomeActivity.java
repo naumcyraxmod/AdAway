@@ -11,6 +11,7 @@ import static org.adaway.ui.lists.ListsActivity.BLOCKED_HOSTS_TAB;
 import static org.adaway.ui.lists.ListsActivity.REDIRECTED_HOSTS_TAB;
 import static org.adaway.ui.lists.ListsActivity.TAB;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -20,6 +21,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.VpnService;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -54,6 +56,7 @@ import org.adaway.ui.support.SupportActivity;
 import org.adaway.ui.update.UpdateActivity;
 import org.adaway.ui.welcome.WelcomeActivity;
 
+import org.adaway.BuildConfig;
 import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
 
@@ -74,6 +77,7 @@ public class HomeActivity extends AppCompatActivity {
     public HomeViewModel homeViewModel;
     private ActivityResultLauncher<Intent> prepareVpnLauncher;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +90,11 @@ public class HomeActivity extends AppCompatActivity {
         this.homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         this.homeViewModel.isAdBlocked().observe(this, this::notifyAdBlocked);
         this.homeViewModel.getError().observe(this, this::notifyError);
+
+
+        TextView appNameTextView = findViewById(R.id.appNameTextView);
+        appNameTextView.setText(getString(R.string.app_name) + " v" + BuildConfig.VERSION_NAME);
+
 
         applyActionBar();
         bindAppVersion();
@@ -127,6 +136,15 @@ public class HomeActivity extends AppCompatActivity {
     private void checkFirstStep() {
         AdBlockMethod adBlockMethod = PreferenceHelper.getAdBlockMethod(this);
         Intent prepareIntent;
+
+
+//
+//        if (adBlockMethod == UNDEFINED) {
+//            adBlockMethod = VPN;
+//        }
+
+        Timber.i("adBlockMethod %s", adBlockMethod);
+
         if (adBlockMethod == UNDEFINED) {
             // Start welcome activity
             startActivity(new Intent(this, WelcomeActivity.class));
@@ -139,6 +157,9 @@ public class HomeActivity extends AppCompatActivity {
 
     private void checkUpdateAtStartup() {
         boolean checkAppUpdateAtStartup = PreferenceHelper.getUpdateCheckAppStartup(this);
+
+        Timber.i("Starting update worker %s", checkAppUpdateAtStartup);
+
         if (checkAppUpdateAtStartup) {
             this.homeViewModel.checkForAppUpdate();
         }
@@ -213,7 +234,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void bindState() {
         this.homeViewModel.getState().observe(this, text -> {
-            this.binding.content.stateTextView.setText(text);
+            this.binding.content.stateTextView.setText(Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY));
             if (text.isEmpty()) {
                 removeView(this.binding.content.stateTextView);
             } else {

@@ -122,11 +122,11 @@ public class VpnModel extends AdBlockModel {
         // 🔥 LOAD RULES HERE
         loadRules();
 
-        if(this.hostListItemDao.getBlockedHostCount().getValue() != 0) {
-            setState(R.string.zero_blocked_hosts);
+
+        if(this.hostListItemDao.getBlockedHostCount_()==0) {
+            setState2("<font color='red'>Can't start anti-ban VPN with zero blocked hosts</font>");
             return;
         }
-
 
         // Start VPN
         boolean started = VpnServiceControls.start(this.context);

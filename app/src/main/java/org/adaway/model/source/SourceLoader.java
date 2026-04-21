@@ -15,6 +15,7 @@ import org.adaway.db.entity.ListType;
 import org.adaway.util.RegexUtils;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -47,6 +48,19 @@ class SourceLoader {
     }
 
     void parse(BufferedReader reader, HostListItemDao hostListItemDao) {
+//        SourceReader sourceReader = new SourceReader(reader, new LinkedBlockingQueue<>(), 1);
+//
+//        int parserCount = 3;
+//        ExecutorService executorService = Executors.newFixedThreadPool(
+//                parserCount + 2,
+//                r -> new Thread(r, TAG)
+//        );
+//        executorService.execute(sourceReader);
+//
+//        executorService.shutdown();
+
+
+
         // Clear current hosts
         hostListItemDao.clearSourceHosts(this.source.getId());
         // Create batch
@@ -61,6 +75,7 @@ class SourceLoader {
         );
         executorService.execute(sourceReader);
         for (int i = 0; i < parserCount; i++) {
+            Timber.i("parse %s", i);
             executorService.execute(new HostListItemParser(this.source, hostsLineQueue, hostsListItemQueue));
         }
         Future<Integer> inserterFuture = executorService.submit(inserter);
@@ -85,21 +100,105 @@ class SourceLoader {
             this.reader = reader;
             this.queue = queue;
             this.parserCount = parserCount;
-        }
+//
+//
+//
+//            try {
+//                String line;
+//
+//                while ((line = reader.readLine()) != null) {
+//                    line = line.trim();
+//
+//
+//
+//                    Timber.d("1 Line %s", line);
+//
+//                }
+//
+//            } catch (IOException e) {
+//                Timber.e(e, "Error reading hosts source:");
+//            } finally {
+////                try {
+////                    Timber.i("reader  close");
+////                    reader.close();
+////                } catch (IOException e) {
+////                    Timber.w(e, "Failed to close reader");
+////                }
+//            }
 
+
+        }
         @Override
         public void run() {
+            Timber.e("RUN STARTED");
+
             try {
-                this.reader.lines().forEach(this.queue::add);
+                Timber.e("Reader: %s", this.reader);
+
+                String line;
+                while ((line = this.reader.readLine()) != null) {
+                    Timber.d("RUN Line: %s", line);
+                    this.queue.add(line);
+                }
+
+                Timber.e("RUN FINISHED");
+
             } catch (Throwable t) {
-                Timber.w(t, "Failed to read hosts source.");
+                Timber.e(t, "RUN CRASHED");
             } finally {
-                // Send end of queue marker to parsers
                 for (int i = 0; i < this.parserCount; i++) {
                     this.queue.add(END_OF_QUEUE_MARKER);
                 }
             }
         }
+//        @Override
+//        public void run() {
+//            Timber.w("SourceReader run:\n%s", this.reader.lines().count());
+//
+//            try {
+//                String line;
+//
+////                this.reader.ready();
+//                while ((line = this.reader.readLine()) != null) {
+//                    line = line.trim();
+//
+//
+//
+//                    Timber.d("2 Line %s", line);
+//
+//                }
+//
+//            } catch (IOException e) {
+//                Timber.e(e, "Error reading hosts source:");
+//            } finally {
+////                try {
+////                    Timber.i("reader  close");
+////                    this.reader.close();
+////                } catch (IOException e) {
+////                    Timber.w(e, "Failed to close reader");
+////                }
+//            }
+//
+//
+//
+//
+//
+////            try {
+////                this.reader.lines().forEach(line -> {
+////                    Timber.w("SourceReader run line:\n%s", line);
+//////                    this.queue.add(line);
+////                });
+////            } catch (Exception e) { // 👈 catch all normal failures
+////                Timber.w(e, "Failed to read hosts source.");
+////            } catch (Error err) {   // 👈 catch critical errors separately
+////                Timber.e(err, "Critical error while reading hosts source.");
+////                throw err; // rethrow so app doesn't silently break
+////            } finally {
+////                for (int i = 0; i < this.parserCount; i++) {
+////                    this.queue.add(END_OF_QUEUE_MARKER);
+////                }
+////            }
+//        }
     }
 
     private static class HostListItemParser implements Runnable {

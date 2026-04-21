@@ -111,8 +111,8 @@ class HostsSourcesAdapter extends ListAdapter<HostsSource, HostsSourcesAdapter.V
         holder.enabledCheckBox.setChecked(source.isEnabled());
 //        holder.enabledCheckBox.setOnClickListener(view -> viewCallback.toggleEnabled(source));
         holder.labelTextView.setText(source.getLabel());
-//        holder.urlTextView.setText(source.getUrl());
-        holder.urlTextView.setText("...");
+        holder.urlTextView.setText(source.getUrl());
+//        holder.urlTextView.setText("...");
         holder.updateTextView.setText(getUpdateText(source));
         holder.sizeTextView.setText(getHostCount(source));
 //        holder.itemView.setOnClickListener(view -> viewCallback.edit(source));

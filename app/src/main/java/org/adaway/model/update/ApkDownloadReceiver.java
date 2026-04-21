@@ -32,6 +32,7 @@ public class ApkDownloadReceiver extends BroadcastReceiver {
             Uri apkUri = downloadManager.getUriForDownloadedFile(id);
             if (apkUri == null) {
                 Timber.w("Failed to download id: %s.", id);
+                UpdateModel.downloadError(context);
             } else {
                 installApk(context, apkUri);
             }
