@@ -57,6 +57,11 @@ public class WelcomeMethodFragment extends WelcomeFragment {
             }
         });
 
+        enableVpnService(this.binding.vpnCardView);
+        WelcomeActivity welcomeActivity = (WelcomeActivity) getActivity();
+        welcomeActivity.goNext();
+
+
         this.binding.rootCardView.setOnClickListener(this::checkRoot);
         this.binding.vpnCardView.setOnClickListener(this::enableVpnService);
 

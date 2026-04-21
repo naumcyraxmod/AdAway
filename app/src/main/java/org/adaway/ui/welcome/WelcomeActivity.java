@@ -121,7 +121,7 @@ public class WelcomeActivity extends AppCompatActivity implements WelcomeNavigab
         hideView(this.binding.backButton);
     }
 
-    private void goNext() {
+    public void goNext() {
         int currentItem = this.binding.viewPager.getCurrentItem();
         int count = this.pagerAdapter.getItemCount();
         if (currentItem >= count - 1) {

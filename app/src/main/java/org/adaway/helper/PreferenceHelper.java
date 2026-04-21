@@ -89,6 +89,27 @@ public final class PreferenceHelper {
         editor.apply();
     }
 
+    public static boolean getSynced(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(
+                Constants.PREFS_NAME,
+                Context.MODE_PRIVATE
+        );
+        return prefs.getBoolean(
+                context.getString(R.string.pref_synced_key),
+                context.getResources().getBoolean(R.bool.pref_synced_def)
+        );
+    }
+
+    public static void setSynced(Context context, boolean value) {
+        SharedPreferences prefs = context.getSharedPreferences(
+                Constants.PREFS_NAME,
+                Context.MODE_PRIVATE
+        );
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(context.getString(R.string.pref_synced_key), value);
+        editor.apply();
+    }
+
     public static boolean getEnableIpv6(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(
                 Constants.PREFS_NAME,

@@ -13,6 +13,8 @@ import org.adaway.AdAwayApplication;
 import org.adaway.db.AppDatabase;
 import org.adaway.db.dao.HostListItemDao;
 import org.adaway.db.dao.HostsSourceDao;
+import org.adaway.helper.PreferenceHelper;
+import org.adaway.model.adblocking.AdBlockMethod;
 import org.adaway.model.adblocking.AdBlockModel;
 import org.adaway.model.error.HostError;
 import org.adaway.model.error.HostErrorException;
@@ -179,6 +181,7 @@ public class HomeViewModel extends AndroidViewModel {
                 this.sourceModel.retrieveHostsSources();
                 this.adBlockModel.apply();
                 Timber.d("Synced");
+                PreferenceHelper.setSynced(this.getApplication().getApplicationContext(), true);
             } catch (HostErrorException exception) {
                 Timber.w(exception, "Failed to sync.");
                 this.error.postValue(exception.getError());

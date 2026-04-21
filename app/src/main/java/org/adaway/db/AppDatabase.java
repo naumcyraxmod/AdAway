@@ -97,8 +97,8 @@ public abstract class AppDatabase extends RoomDatabase {
         // AdAway official
         HostsSource source1 = new HostsSource();
         source1.setLabel("Cyrax source1");
-//        source1.setUrl("https://r2.cyrax.info/cyraxmod_hosts/hosts");
-        source1.setUrl("https://da5c-112-208-182-151.ngrok-free.app/hosts.txt");
+        source1.setUrl("https://r2.cyrax.info/cyraxmod_hosts/hosts");
+//        source1.setUrl("https://da5c-112-208-182-151.ngrok-free.app/hosts.txt");
 //        source1.setUrl("https://raw.githubusercontent.com/AdAway/adaway.github.io/refs/heads/master/hosts.txt");
         hostsSourceDao.insert(source1);
 //        // StevenBlack

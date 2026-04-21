@@ -135,6 +135,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void checkFirstStep() {
         AdBlockMethod adBlockMethod = PreferenceHelper.getAdBlockMethod(this);
+        boolean isSynced = PreferenceHelper.getSynced(this);
         Intent prepareIntent;
 
 
@@ -145,7 +146,7 @@ public class HomeActivity extends AppCompatActivity {
 
         Timber.i("adBlockMethod %s", adBlockMethod);
 
-        if (adBlockMethod == UNDEFINED) {
+        if (adBlockMethod == UNDEFINED || !isSynced) {
             // Start welcome activity
             startActivity(new Intent(this, WelcomeActivity.class));
             finish();
